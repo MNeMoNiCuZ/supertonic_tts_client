@@ -1,194 +1,212 @@
 # Supertonic TTS Client
 
-Python client for connecting to a Supertonic TTS server.
+Python client for connecting to a Supertonic TTS server. This client allows you to synthesize text into speech using various voices and settings, and save the output to different audio formats.
 
-## Installation
+## Features
 
-1. Create a virtual environment. You may ue the included `venv_create.bat` to automatically create it.
-2. Install the libraries in requirements.txt. `pip install -r requirements.txt`.
+- **Synthesize Text to Speech**: Convert text into high-quality speech.
+- **Multiple Voices**: Choose from a variety of male and female voices.
+- **Customizable Quality and Speed**: Adjust the quality and speed of the generated speech.
+- **Multiple Audio Formats**: Save the audio in WAV, MP3, and other formats.
+- **Command-Line and Python API**: Use the client from the command line or integrate it into your Python applications.
+- **Batch Synthesis**: Synthesize multiple texts in a single request.
+- **Health Check**: Check the status of the Supertonic TTS server.
 
-This is done by step 1 when asked if you use `venv_create.bat`.
+## Getting Started
 
-
-
-**For MP3 support, install ffmpeg:**
-- Windows: `choco install ffmpeg`
-- Linux: `sudo apt-get install ffmpeg`
-- macOS: `brew install ffmpeg`
-
-## Quick Start
-
-### Command Line
+### 1. Clone the Repository
 
 ```bash
-# Basic usage
-python client.py "Hello world" -o output.wav
+git clone https://github.com/MNeMoNiCuZ/supertonic_tts_client.git
+cd supertonic_tts_client
+```
 
-# MP3 output
-python client.py "Hello world" -o output.mp3
+### 2. Create a Virtual Environment
 
-# Play immediately
-python client.py "Hello world" -p
+You can use the included `venv_create.bat` script to create a virtual environment automatically.
 
-# Custom settings
-python client.py "Hello" -v F1 -q 10 -s 1.2 -o test.wav
+**Windows:**
+```bash
+venv_create.bat
+```
 
-# Remote server
-python client.py "Hello" -u http://server-ip:8765 -o out.wav
+Alternatively, you can create it manually:
+
+**Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+Install the required packages from `requirements.txt`.
+
+```bash
+pip install -r requirements.txt
+```
+
+**For MP3 support, you also need to install ffmpeg:**
+
+- **Windows:** `choco install ffmpeg`
+- **Linux:** `sudo apt-get install ffmpeg`
+- **macOS:** `brew install ffmpeg`
+
+## Configuration
+
+The client can be configured using a `.env` file.
+
+### 1. Create the .env File
+
+Copy the `.env.example` file to a new file named `.env`.
+
+```bash
+copy .env.example .env
+```
+
+### 2. Configure Environment Variables
+
+Open the `.env` file and customize the following variables:
+
+- **`BASE_URL`**: The URL of the Supertonic TTS server (e.g., `http://localhost:8765`). If you are running the server in a Docker container, this will be the URL of the Docker host.
+- **`TIMEOUT`**: The timeout in seconds for requests to the server.
+- **`DEFAULT_VOICE`**: The default voice to use for synthesis (e.g., `M1`, `F1`).
+- **`DEFAULT_QUALITY`**: The default quality of the synthesized speech (1-20).
+- **`DEFAULT_SPEED`**: The default speed of the synthesized speech (0.5-2.0).
+- **`DEFAULT_FORMAT`**: The default audio format for output files (e.g., `wav`, `mp3`).
+- **`TEMP_DIR`**: The directory to use for temporary files.
+- **`OUTPUT_DIR`**: The directory to save output files to.
+
+## Usage
+
+### Command-Line Interface
+
+The `inference.py` script provides a command-line interface for the client.
+
+**Basic Usage:**
+
+```bash
+python inference.py "Hello world" -o output.wav
+```
+
+**MP3 Output:**
+
+```bash
+python inference.py "Hello world" -o output.mp3
+```
+
+**Play Immediately:**
+
+```bash
+python inference.py "Hello world" -p
+```
+
+**Custom Settings:**
+
+```bash
+python inference.py "Hello" -v F1 -q 10 -s 1.2 -o test.wav
+```
+
+**Remote Server:**
+
+```bash
+python inference.py "Hello" -u http://server-ip:8765 -o out.wav
+```
+
+**Check Server Health:**
+
+```bash
+python inference.py --health
 ```
 
 ### Python API
 
-```python
-from client import SupertonicClient
+The `inference.py` script also provides a Python API for the client.
 
-# Connect to server
-client = SupertonicClient(base_url="http://localhost:8765")
-
-# Synthesize
-client.synthesize(
-    text="Hello from Python",
-    voice_style="M1",
-    total_step=5,
-    speed=1.05,
-    save_path="output.wav"
-)
-
-client.close()
-```
-
-## Command-Line Arguments
-
-| Short | Long | Description | Default |
-|-------|------|-------------|---------|
-| | `text` | Text to synthesize | Required |
-| `-o` | `--output` | Output file (.wav, .mp3, etc.) | Required unless `-p` |
-| `-v` | `--voice` | Voice: M1, M2, F1, F2 | M1 |
-| `-q` | `--quality` | Quality 1-20 (higher=better) | 5 |
-| `-s` | `--speed` | Speed 0.5-2.0 (higher=faster) | 1.05 |
-| `-u` | `--url` | Server URL | http://localhost:8765 |
-| `-p` | `--play` | Play immediately | false |
-| | `--health` | Check server health | false |
-
-## Voices
-
-| Voice | Gender | Style | Best For |
-|-------|--------|-------|----------|
-| M1 | Male | Deep, authoritative | Narration, audiobooks |
-| M2 | Male | Lighter, casual | Tutorials, conversation |
-| F1 | Female | Clear, professional | News, education |
-| F2 | Female | Warm, expressive | Storytelling |
-
-## Quality Guide
-
-| Quality | Speed | Use Case |
-|---------|-------|----------|
-| 1-2 | Fastest | Draft, testing |
-| 3-5 | Fast | **Production** |
-| 6-10 | Moderate | High quality |
-| 11-20 | Slow | Studio quality |
-
-## Audio Formats
-
-- **WAV** (.wav) - Default, no extra dependencies
-- **MP3** (.mp3) - Requires `pydub` + `ffmpeg`
-- **OGG** (.ogg) - Requires `pydub` + `ffmpeg`
-- **FLAC** (.flac) - Requires `pydub` + `ffmpeg`
-
-## Python API Examples
-
-### Context Manager
+**Basic Usage:**
 
 ```python
-from client import SupertonicClient
+from inference import SupertonicClient
 
-with SupertonicClient(base_url="http://localhost:8765") as client:
+with SupertonicClient() as client:
     client.synthesize(
-        text="Using context manager",
-        voice_style="F2",
+        text="Hello from Python",
+        voice_style="M1",
         save_path="output.wav"
     )
 ```
 
-### Batch Synthesis
+**MP3 Output:**
 
 ```python
-client = SupertonicClient()
+from inference import SupertonicClient
 
-texts = ["First", "Second", "Third"]
-voices = ["M1", "F1", "M2"]
-
-client.batch_synthesize(
-    texts=texts,
-    voice_styles=voices,
-    save_dir="batch_output"
-)
+with SupertonicClient() as client:
+    client.synthesize(
+        text="MP3 example",
+        voice_style="F1",
+        save_path="output.mp3"
+    )
 ```
 
-### MP3 Output
+**Batch Synthesis:**
 
 ```python
-client.synthesize(
-    text="MP3 example",
-    voice_style="F1",
-    save_path="output.mp3"  # Auto-converts to MP3
-)
+from inference import SupertonicClient
+
+with SupertonicClient() as client:
+    texts = ["First", "Second", "Third"]
+    voices = ["M1", "F1", "M2"]
+
+    client.batch_synthesize(
+        texts=texts,
+        voice_styles=voices,
+        save_dir="batch_output"
+    )
 ```
 
-## Configuration
+**Check Server Health:**
 
-Create a `.env` file in the same directory as `inference.py` to customize default settings:
+```python
+from inference import SupertonicClient
 
-```bash
-# Server Settings
-BASE_URL=http://localhost:8765
-TIMEOUT=30
-
-# Default Synthesis Settings
-DEFAULT_VOICE=M1
-DEFAULT_QUALITY=5
-DEFAULT_SPEED=1.05
-DEFAULT_FORMAT=wav
-
-# Path Settings
-TEMP_DIR=
-OUTPUT_DIR=output
+with SupertonicClient() as client:
+    health = client.health()
+    print(health)
 ```
 
-**Example `.env` configurations:**
+### All Supported Functions
 
-```bash
-# Remote server
-BASE_URL=http://192.168.1.100:8765
+The following functions are available in the `SupertonicClient` class:
 
-# Custom temp directory for playback
-TEMP_DIR=C:/Temp/TTS
+- **`health()`**: Checks the health of the Supertonic TTS server.
+  - **Returns**: A dictionary containing the server status.
 
-# Higher quality defaults
-DEFAULT_QUALITY=10
-DEFAULT_VOICE=F1
-```
+- **`synthesize(text, voice_style=None, total_step=None, speed=None, save_path=None)`**: Synthesizes speech from text.
+  - **`text`** (str): The text to synthesize.
+  - **`voice_style`** (str, optional): The voice style to use (e.g., "M1", "F2"). Defaults to `DEFAULT_VOICE` from `.env`.
+  - **`total_step`** (int, optional): The number of denoising steps (1-20). Higher is better quality. Defaults to `DEFAULT_QUALITY` from `.env`.
+  - **`speed`** (float, optional): The speech speed (0.5-2.0). Higher is faster. Defaults to `DEFAULT_SPEED` from `.env`.
+  - **`save_path`** (str, optional): The path to save the audio file. The format is determined by the file extension.
 
-Copy `.env.example` to `.env` and customize as needed. The `.env` file is optional - if not present, hardcoded defaults will be used
+- **`batch_synthesize(texts, voice_styles=None, total_step=None, speed=None, save_dir=None)`**: Synthesizes multiple texts in a single request.
+  - **`texts`** (list): A list of texts to synthesize.
+  - **`voice_styles`** (list, optional): A list of voice styles corresponding to the texts.
+  - **`total_step`** (int, optional): The number of denoising steps.
+  - **`speed`** (float, optional): The speech speed.
+  - **`save_dir`** (str, optional): The directory to save the output files.
 
-## Troubleshooting
+- **`close()`**: Closes the client session.
 
-### Connection Error
-- Verify server is running: `curl http://localhost:8765/health`
-- Check firewall settings
-- Verify correct URL and port
+The following convenience functions are also available:
 
-### MP3 Error
-```bash
-pip install audioop-lts pydub
-# Install ffmpeg (see installation section)
-```
+- **`synthesize_text(text, save_path, base_url=None, **kwargs)`**: A convenience function to synthesize text and save it to a file.
+- **`play_audio(audio_path)`**: Plays an audio file.
 
-### Import Error (Python 3.13+)
-```bash
-pip install audioop-lts
-```
-
-## Server Setup
-
-See `README-Docker.md` for server deployment instructions.
+For more detailed examples, see `inference-examples.py`.
