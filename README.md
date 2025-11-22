@@ -1,6 +1,8 @@
-# Supertonic TTS Client
+# Supertonic Text-To-Speech Server
 
 Python client for connecting to a Supertonic TTS server. This client allows you to synthesize text into speech using various voices and settings, and save the output to different audio formats.
+
+Use the [https://github.com/MNeMoNiCuZ/supertonic_tts_server](https://github.com/MNeMoNiCuZ/supertonic_tts_server/) for the docker server used with this code.
 
 ## Features
 
