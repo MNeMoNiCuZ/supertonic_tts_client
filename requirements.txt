@@ -1,0 +1,23 @@
+# Supertonic TTS Client Requirements
+# Minimal dependencies for using the client.py script
+
+# Required - HTTP requests to TTS server
+requests>=2.31.0
+
+# Optional - .env file support (has built-in fallback parser)
+python-dotenv>=1.0.0
+
+# Optional - Audio playback support (for --play flag)
+sounddevice>=0.4.6
+soundfile>=0.12.1
+
+# Optional - MP3 and other audio format support
+pydub>=0.25.1
+# For Python 3.13+, pydub needs audioop replacement
+audioop-lts>=0.2.1
+
+
+# Note: pydub also requires ffmpeg to be installed on your system
+# Windows: choco install ffmpeg  OR  download from https://ffmpeg.org/
+# Linux: sudo apt-get install ffmpeg
+# Mac: brew install ffmpeg
