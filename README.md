@@ -4,14 +4,12 @@ Python client for connecting to a Supertonic TTS server.
 
 ## Installation
 
-```bash
-pip install -r requirements-client.txt
-```
+1. Create a virtual environment. You may ue the included `venv_create.bat` to automatically create it.
+2. Install the libraries in requirements.txt. `pip install -r requirements.txt`.
 
-**For Python 3.13+:**
-```bash
-pip install audioop-lts
-```
+This is done by step 1 when asked if you use `venv_create.bat`.
+
+
 
 **For MP3 support, install ffmpeg:**
 - Windows: `choco install ffmpeg`
