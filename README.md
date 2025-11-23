@@ -183,6 +183,29 @@ with SupertonicClient() as client:
     print(health)
 ```
 
+### MCP (Model Context Protocol) Tool Usage
+
+The `supertonic_text_to_speech_mcp.py` script provides a tool for use within an MCP (Model Context Protocol) or similar tool-using framework. This allows an external system (like a conversational AI) to use the Supertonic TTS client's capabilities.
+
+The primary tool provided is `supertonic_text_to_speech`, which has several modes of operation:
+
+-   **`health`**: Checks the operational status of the Supertonic TTS server.
+-   **`synthesize`**: Converts a single string of text into speech. The audio can be saved to a file, played directly on the machine running the client, or returned as a base64-encoded string.
+-   **`batch_synthesize`**: Converts a list of text strings into speech, either saving them to a directory or returning them as a list of base64-encoded strings.
+
+**Key Parameters:**
+
+-   `mode`: The operation to perform (`health`, `synthesize`, or `batch_synthesize`).
+-   `text`/`texts`: The text(s) to be synthesized.
+-   `voice_style`: The voice to use (e.g., `M1`, `F1`).
+-   `quality`: Denoising steps for quality (1-20).
+-   `speed`: Speech speed (0.5-2.0).
+-   `save_path`/`save_dir`: File or directory path to save the audio.
+-   `playback`: If `true`, plays the audio directly. Use with caution as it is non-blocking.
+-   `server_url`: The URL of the Supertonic TTS server.
+
+This tool provides a powerful way to integrate text-to-speech capabilities into larger automated systems.
+
 ### All Supported Functions
 
 The following functions are available in the `SupertonicClient` class:
